@@ -1,7 +1,5 @@
-    % Reloj
-
-warning('off');
-
+% Morty run 
+% Juego en el jugador debe evitar los asteroides y recoger los escudos
 global AsteroideX AsteroideY PlayerInit AsteroideInit ShieldInit new_star_game direction score runLoop;
 
 restar_game; % Función de inicializacion de variables
@@ -89,6 +87,8 @@ asteroide = imread('asteroide.png');
 asteroide = imresize(asteroide, [100 100]);
 escudo = imread('escudo.png');
 escudo = imresize(escudo, [100 100]);
+escudoLogo = imread('escudo.png');
+escudoLogo = imresize(escudoLogo, [30 30]);
 
 set(PlayerCanvasHd1, 'CData', jugador)
 set (Asteroide1CanvasHd1, 'CData', asteroide);
