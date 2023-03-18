@@ -1,7 +1,7 @@
 clear all, close all, clc
 
 % 640x480
-camara = webcam;
+camara = webcam(1);
 preview(camara); % Muestra la camara
 
 for i=1:250
@@ -49,8 +49,8 @@ for i=1:250
     copiaImagen(yPromedio+2, xPromedio+2) = 1;
 
     
-    figure(2), imshow(copiaImagen); % MUESTRA LA POSICION DEL OBJETO VERDE
-    %figure(2), imshow(imagenFinal); % MUESTRA EL OBJETO VERDE CAPTURADO
+    %figure(2), imshow(copiaImagen); % MUESTRA LA POSICION DEL OBJETO VERDE
+    figure(2), imshow(imagenFinal); % MUESTRA EL OBJETO VERDE CAPTURADO
     pause(0.001);
 
 end
