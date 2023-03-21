@@ -12,7 +12,7 @@ MainFigureInitPos = [500 100]; % Posicion inicial de la ventana
 MainFigureSize = [800 600]; % Tamaño de la ventana
 MainAxesInitPos = [0 0]; % Posicion inicial de los ejes
 MainAxesSize = [800 600]; % Tamaño de los ejes
-ObjectSize = [100 100]; % Tamaño de los objetos
+ObjectSize = [50 50]; % Tamaño de los objetos
 PlayerSize = [100 100]; % Tamaño del jugador
 
 MainFigureHd1 = figure('Name', 'Morty run', ... % Nombre de la ventana
@@ -128,7 +128,6 @@ while runLoop
         set(GameOverHd1, 'Visible', 'off');
         set(PressKeyHd1, 'Visible', 'off');
         set(ScoreHd1, 'Visible', 'off');
-        set(LifeCounterHd1, 'Visible', 'on');
 
         while runLoop
             drawnow;
@@ -153,7 +152,7 @@ while runLoop
             %   - El jugador está en el mismo eje Y que el asteroide
             for i = 1:3
 
-                if ((PlayerInit(1) >= AsteroideX(i) && PlayerInit(1) <= AsteroideX(i) + 100) || (PlayerInit(1) + 100 >= AsteroideX(i) && PlayerInit(1) + 100 <= AsteroideX(i) + 100)) && ((PlayerInit(2) >= AsteroideY(i) && PlayerInit(2) <= AsteroideY(i) + 100) || (PlayerInit(2) + 100 >= AsteroideY(i) && PlayerInit(2) + 100 <= AsteroideY(i) + 100))
+                if ((PlayerInit(1) >= AsteroideX(i) && PlayerInit(1) <= AsteroideX(i) + 50) || (PlayerInit(1) + 100 >= AsteroideX(i) && PlayerInit(1) + 100 <= AsteroideX(i) + 50)) && ((PlayerInit(2) >= AsteroideY(i) && PlayerInit(2) <= AsteroideY(i) + 50) || (PlayerInit(2) + 100 >= AsteroideY(i) && PlayerInit(2) + 100 <= AsteroideY(i) + 50))
 
                     if shields == 0
                         set(GameOverHd1, 'Visible', 'on');
@@ -214,7 +213,7 @@ while runLoop
 
                 end
 
-                if ((PlayerInit(1) >= ShieldX && PlayerInit(1) <= ShieldX + 100) || (PlayerInit(1) + 100 >= ShieldX && PlayerInit(1) + 100 <= ShieldX + 100)) && ((PlayerInit(2) >= ShieldY && PlayerInit(2) <= ShieldY + 100) || (PlayerInit(2) + 100 >= ShieldY && PlayerInit(2) + 100 <= ShieldY + 100))
+                if ((PlayerInit(1) >= ShieldX && PlayerInit(1) <= ShieldX + 50) || (PlayerInit(1) + 100 >= ShieldX && PlayerInit(1) + 100 <= ShieldX + 50)) && ((PlayerInit(2) >= ShieldY && PlayerInit(2) <= ShieldY + 50) || (PlayerInit(2) + 100 >= ShieldY && PlayerInit(2) + 100 <= ShieldY + 50))
                     shields = shields + 1;
                     %Se cambia el texto del contador de vidas
                     set(LifeCounterHd1, 'String', num2str(shields+1));
