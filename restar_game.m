@@ -2,6 +2,7 @@ function restar_game % Funcion de inicializacion de variables
     global AsteroideX AsteroideY PlayerInit AsteroideInit ShieldInit fire direction bullet_stat touch_bottom score new_star_game;
     % Inicializacion de variables de juego
     PlayerInit = [300 432]; %Posición inical del jugador
+    ShieldInit = [randperm(700, 10) randperm(100, 10)*10]; %Posición inicial del escudo
     AsteroideX = randperm(700, 10); %Posición inicial de los asteroides en el eje X
     AsteroideY = -randperm(100, 10)*10; %Posición inicial de los asteroides en el eje Y
     AsteroideInit = {}; %Inicialización de la celda de asteroides

@@ -12,6 +12,7 @@ MainFigureInitPos = [500 100]; % Posicion inicial de la ventana
 MainFigureSize = [800 600]; % Tamaño de la ventana
 MainAxesInitPos = [0 0]; % Posicion inicial de los ejes
 MainAxesSize = [800 600]; % Tamaño de los ejes
+HDLSize = [100 100]; % Tamaño de los objetos
 
 MainFigureHd1 = figure('Name', 'Morty run',... % Nombre de la ventana
     'NumberTitle', 'off',... % Desactiva el numero de la ventana
@@ -56,6 +57,10 @@ Asteroide2CanvasHd1 = image( AsteroideInit{2}(1), AsteroideInit{2}(2), [], ...
 Asteroide3CanvasHd1 = image( AsteroideInit{3}(1), AsteroideInit{3}(2), [], ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on');
+
+EscudoCanvasHDL = image (ShieldInit(1), ShieldInit(2), [], ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'on');
     
 GameOverHd1 = text (GAME_RESOLUTION(1)/2, (GAME_RESOLUTION(2)/2)-200, 'GAME OVER', ...
     'Parent', MainAxesHd1, ...
@@ -82,11 +87,11 @@ ScoreHd1 = text (GAME_RESOLUTION(1)/2, GAME_RESOLUTION(2)/2, '0', ...
     'VerticalAlignment', 'middle');
 
 jugador = imread('Morty.png');
-jugador = imresize(jugador, [100 100]);
+jugador = imresize(jugador, HDLSize);
 asteroide = imread('asteroide.png');
-asteroide = imresize(asteroide, [100 100]);
+asteroide = imresize(asteroide, HDLSize);
 escudo = imread('escudo.png');
-escudo = imresize(escudo, [100 100]);
+escudo = imresize(escudo, HDLSize);
 escudoLogo = imread('escudo.png');
 escudoLogo = imresize(escudoLogo, [30 30]);
 
