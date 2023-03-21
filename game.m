@@ -1,6 +1,6 @@
-% Morty run 
+% Morty run
 % Juego en el jugador debe evitar los asteroides y recoger los escudos
-global AsteroideX AsteroideY PlayerInit AsteroideInit ShieldInit new_star_game direction score runLoop;
+global PlayerInit AsteroideInit new_star_game direction score runLoop ShieldX ShieldY;
 
 restar_game; % Función de inicializacion de variables
 
@@ -14,14 +14,14 @@ MainAxesInitPos = [0 0]; % Posicion inicial de los ejes
 MainAxesSize = [800 600]; % Tamaño de los ejes
 HDLSize = [100 100]; % Tamaño de los objetos
 
-MainFigureHd1 = figure('Name', 'Morty run',... % Nombre de la ventana
-    'NumberTitle', 'off',... % Desactiva el numero de la ventana
-    'MenuBar', 'none',... % Desactiva la barra de menu
-    'ToolBar', 'none',... % Desactiva la barra de herramientas
-    'Units', 'pixels',... % Unidades de la ventana
-    'Position', [MainFigureInitPos MainFigureSize],... % Posicion y tamaño de la ventana
-    'Resize', 'off',... % Desactiva el redimensionamiento de la ventana
-    'Color', [0 0 0],... % Color de fondo de la ventana
+MainFigureHd1 = figure('Name', 'Morty run', ... % Nombre de la ventana
+    'NumberTitle', 'off', ... % Desactiva el numero de la ventana
+    'MenuBar', 'none', ... % Desactiva la barra de menu
+    'ToolBar', 'none', ... % Desactiva la barra de herramientas
+    'Units', 'pixels', ... % Unidades de la ventana
+    'Position', [MainFigureInitPos MainFigureSize], ... % Posicion y tamaño de la ventana
+    'Resize', 'off', ... % Desactiva el redimensionamiento de la ventana
+    'Color', [0 0 0], ... % Color de fondo de la ventana
     'KeyPressFcn', @keyPress, ... % Funcion de teclado
     'CloseRequestFcn', @closeGame); % Funcion de cierre de la ventana
 
@@ -42,27 +42,27 @@ MainCanvasHd1 = image([0 MainAxesSize(1)], [0 MainAxesSize(2)], [], ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on');
 
-PlayerCanvasHd1 = image( PlayerInit(1), PlayerInit(2), [], ...
-    'Parent', MainAxesHd1, ...
-    'Visible', 'on');
-    
-Asteroide1CanvasHd1 = image( AsteroideInit{1}(1), AsteroideInit{1}(2), [], ...
-    'Parent', MainAxesHd1, ...
-    'Visible', 'on');
-    
-Asteroide2CanvasHd1 = image( AsteroideInit{2}(1), AsteroideInit{2}(2), [], ...
-    'Parent', MainAxesHd1, ...
-    'Visible', 'on');
-    
-Asteroide3CanvasHd1 = image( AsteroideInit{3}(1), AsteroideInit{3}(2), [], ...
+PlayerCanvasHd1 = image(PlayerInit(1), PlayerInit(2), [], ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on');
 
-EscudoCanvasHDL = image (ShieldInit(1), ShieldInit(2), [], ...
+Asteroide1CanvasHd1 = image(AsteroideInit{1}(1), AsteroideInit{1}(2), [], ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on');
-    
-GameOverHd1 = text (GAME_RESOLUTION(1)/2, (GAME_RESOLUTION(2)/2)-200, 'GAME OVER', ...
+
+Asteroide2CanvasHd1 = image(AsteroideInit{2}(1), AsteroideInit{2}(2), [], ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'on');
+
+Asteroide3CanvasHd1 = image(AsteroideInit{3}(1), AsteroideInit{3}(2), [], ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'on');
+
+EscudoCanvasHd1 = image(ShieldX, ShieldY, [], ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'on');
+
+GameOverHd1 = text (GAME_RESOLUTION(1) / 2, (GAME_RESOLUTION(2) / 2) - 200, 'GAME OVER', ...
     'Parent', MainAxesHd1, ...
     'Visible', 'off', ...
     'Color', [1 1 1], ...
@@ -70,7 +70,7 @@ GameOverHd1 = text (GAME_RESOLUTION(1)/2, (GAME_RESOLUTION(2)/2)-200, 'GAME OVER
     'HorizontalAlignment', 'center', ...
     'VerticalAlignment', 'middle');
 
-PressKeyHd1 = text (GAME_RESOLUTION(1)/2, GAME_RESOLUTION(2)/2, 'Press any key to start', ...
+PressKeyHd1 = text (GAME_RESOLUTION(1) / 2, GAME_RESOLUTION(2) / 2, 'Press any key to start', ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on', ...
     'Color', [1 1 1], ...
@@ -78,7 +78,7 @@ PressKeyHd1 = text (GAME_RESOLUTION(1)/2, GAME_RESOLUTION(2)/2, 'Press any key t
     'HorizontalAlignment', 'center', ...
     'VerticalAlignment', 'middle');
 
-ScoreHd1 = text (GAME_RESOLUTION(1)/2, GAME_RESOLUTION(2)/2, '0', ...
+ScoreHd1 = text (GAME_RESOLUTION(1) / 2, GAME_RESOLUTION(2) / 2, '0', ...
     'Parent', MainAxesHd1, ...
     'Visible', 'off', ...
     'Color', [1 1 1], ...
@@ -99,26 +99,31 @@ set(PlayerCanvasHd1, 'CData', jugador)
 set (Asteroide1CanvasHd1, 'CData', asteroide);
 set (Asteroide2CanvasHd1, 'CData', asteroide);
 set (Asteroide3CanvasHd1, 'CData', asteroide);
+set (EscudoCanvasHd1, 'CData', escudo);
 
 global dir mdir bdir shields s_shield ShieldCanvasHd1
 
 dir = 0;
 mdir = ones(1, 3);
 bdir = 0;
-shields = 0;
-s_shield = 1;
-ShieldCanvasHd1 = zeros(1, shields+1);
+shields = 2;
+Speed_shield = 1;
+directionEscudo = 0;
+ShieldCanvasHd1 = ones(1, shields + 1);
 runLoop = true;
 
 while runLoop
+
     if new_star_game == 1
         restar_game;
         new_star_game = 0;
         set(GameOverHd1, 'Visible', 'off');
         set(PressKeyHd1, 'Visible', 'off');
         set(ScoreHd1, 'Visible', 'off');
+
         while runLoop
             drawnow;
+
             if (direction == 1)
                 dir = 1; %Movimiento hacia la derecha
                 direction = 0;
@@ -133,47 +138,86 @@ while runLoop
                 direction = 0;
             end
 
-        %Revisa si el jugador choca con los asteroides
-        %El jugador se choca si: (Teniendo en cuenta que el asteroide es de 100x100 y el jugador de 100x100)
-        %   - El jugador está en el mismo eje X que el asteroide
-        %   - El jugador está en el mismo eje Y que el asteroide
-        for i=1:3
-            if ( (PlayerInit(1) >= AsteroideX(i) && PlayerInit(1) <= AsteroideX(i)+100) || (PlayerInit(1)+100 >= AsteroideX(i) && PlayerInit(1)+100 <= AsteroideX(i)+100) ) && ( (PlayerInit(2) >= AsteroideY(i) && PlayerInit(2) <= AsteroideY(i)+100) || (PlayerInit(2)+100 >= AsteroideY(i) && PlayerInit(2)+100 <= AsteroideY(i)+100) )
-                disp('Chocaste con un asteroide');
-                if shields == 0
-                    set(GameOverHd1, 'Visible', 'on');
-                    set(PressKeyHd1, 'Visible', 'on');
-                    set(ScoreHd1, 'Visible', 'off');
-                    dir = 0;
-                    restar_game;
-                    runLoop = false;
-                else
-                    shields = shields - 1;
-                end
-            % Si no choca con el asteroide, se mueve
-            else
-                PlayerInit(1) = PlayerInit(1) - dir;
-                if PlayerInit(1) < 0
-                    PlayerInit(1) = 0;
-                elseif PlayerInit(1) >= GAME_RESOLUTION(1)-100
-                    PlayerInit(1) = GAME_RESOLUTION(1)-100;
-                end
-                set(PlayerCanvasHd1, 'XData', PlayerInit(1));
-        
-                for i=1:3
-                    AsteroideY(i) = AsteroideY(i) + mdir(i);
-                    if AsteroideY(i) > GAME_RESOLUTION(2)
-                        AsteroideY(i) = -100;
-                        AsteroideX(i) = randi([0 GAME_RESOLUTION(1)-100]);
+            %Revisa si el jugador choca con los asteroides
+            %El jugador se choca si: (Teniendo en cuenta que el asteroide es de 100x100 y el jugador de 100x100)
+            %   - El jugador está en el mismo eje X que el asteroide
+            %   - El jugador está en el mismo eje Y que el asteroide
+            for i = 1:3
+
+                if ((PlayerInit(1) >= AsteroideX(i) && PlayerInit(1) <= AsteroideX(i) + 100) || (PlayerInit(1) + 100 >= AsteroideX(i) && PlayerInit(1) + 100 <= AsteroideX(i) + 100)) && ((PlayerInit(2) >= AsteroideY(i) && PlayerInit(2) <= AsteroideY(i) + 100) || (PlayerInit(2) + 100 >= AsteroideY(i) && PlayerInit(2) + 100 <= AsteroideY(i) + 100))
+
+                    if shields == 0
+                        set(GameOverHd1, 'Visible', 'on');
+                        set(PressKeyHd1, 'Visible', 'on');
+                        set(ScoreHd1, 'Visible', 'off');
+                        dir = 0;
+                        restar_game;
+                        runLoop = false;
+                    else
+                        shields = shields - 1;
+                        %Se mueve el asteroide a una posición aleatoria arriba de la pantalla
+                        AsteroideX(i) = randi([0 GAME_RESOLUTION(1) - 100]);
+                        AsteroideY(i) = GAME_RESOLUTION(2) + 100;
+                        mdir(i) = 1;
+                        set(Asteroide1CanvasHd1, 'XData', AsteroideX(i), 'YData', AsteroideY(i));
+                        %Mostrar las vidas restantes
+                        disp(shields)
                     end
+
+                    %Si el jugador no choca con el asteroide, se revisa si el jugador chocó con un escudo.
+                    % Si no choca con el asteroide, se mueve
+                else
+                    PlayerInit(1) = PlayerInit(1) - dir;
+
+                    if PlayerInit(1) < 0
+                        PlayerInit(1) = 0;
+                    elseif PlayerInit(1) >= GAME_RESOLUTION(1) - 100
+                        PlayerInit(1) = GAME_RESOLUTION(1) - 100;
+                    end
+
+                    set(PlayerCanvasHd1, 'XData', PlayerInit(1));
+
+                    %Se mueven los asteroides
+                    for i = 1:3
+                        AsteroideY(i) = AsteroideY(i) + mdir(i);
+
+                        if AsteroideY(i) > GAME_RESOLUTION(2)
+                            AsteroideY(i) = -100;
+                            AsteroideX(i) = randi([0 GAME_RESOLUTION(1) - 100]);
+                        end
+
+                    end
+
+                    set(Asteroide1CanvasHd1, 'XData', AsteroideX(1), 'YData', AsteroideY(1));
+                    set(Asteroide2CanvasHd1, 'XData', AsteroideX(2), 'YData', AsteroideY(2));
+                    set(Asteroide3CanvasHd1, 'XData', AsteroideX(3), 'YData', AsteroideY(3));
+
+                    %Se mueve el escudo
+                    ShieldY = ShieldY + s_shield;
+
+                    if ShieldY > GAME_RESOLUTION(2)
+                        ShieldY = -100;
+                        ShieldX = randi([0 GAME_RESOLUTION(1) - 100]);
+                    end
+
+                    set(EscudoCanvasHd1, 'XData', ShieldX, 'YData', ShieldY);
+
                 end
-                set(Asteroide1CanvasHd1, 'XData', AsteroideX(1), 'YData', AsteroideY(1));
-                set(Asteroide2CanvasHd1, 'XData', AsteroideX(2), 'YData', AsteroideY(2));
-                set(Asteroide3CanvasHd1, 'XData', AsteroideX(3), 'YData', AsteroideY(3));
+
+                if ((PlayerInit(1) >= ShieldX && PlayerInit(1) <= ShieldX + 100) || (PlayerInit(1) + 100 >= ShieldX && PlayerInit(1) + 100 <= ShieldX + 100)) && ((PlayerInit(2) >= ShieldY && PlayerInit(2) <= ShieldY + 100) || (PlayerInit(2) + 100 >= ShieldY && PlayerInit(2) + 100 <= ShieldY + 100))
+                    shields = shields + 1;
+                    disp(shields)
+                    ShieldX = randi([0 GAME_RESOLUTION(1) - 100]);
+                    ShieldY = -100;
+                    set(EscudoCanvasHd1, 'XData', ShieldX, 'YData', ShieldY);
+                end
+
             end
+
         end
-        end
+
         runLoop = true;
     end
+
     drawnow;
-end 
+end
