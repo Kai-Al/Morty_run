@@ -71,6 +71,14 @@ GameOverHd1 = text (GAME_RESOLUTION(1) / 2, (GAME_RESOLUTION(2) / 2) - 200, 'GAM
     'HorizontalAlignment', 'center', ...
     'VerticalAlignment', 'middle');
 
+VictoryHd1 = text (GAME_RESOLUTION(1) / 2, (GAME_RESOLUTION(2) / 2) - 200, 'VICTORY', ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'off', ...
+    'Color', [1 1 1], ...
+    'FontSize', 50, ...
+    'HorizontalAlignment', 'center', ...
+    'VerticalAlignment', 'middle');
+
 PressKeyHd1 = text (GAME_RESOLUTION(1) / 2, GAME_RESOLUTION(2) / 2, 'Press any key to start', ...
     'Parent', MainAxesHd1, ...
     'Visible', 'on', ...
@@ -125,10 +133,11 @@ while runLoop
     if new_star_game == 1
         restar_game;
         new_star_game = 0;
+        set(VictoryHd1, 'Visible', 'off');
         set(GameOverHd1, 'Visible', 'off');
         set(PressKeyHd1, 'Visible', 'off');
         set(ScoreHd1, 'Visible', 'off');
-
+        set(LifeCounterHd1, 'Visible', 'on');
         while runLoop
             drawnow;
 
@@ -157,7 +166,7 @@ while runLoop
                     if shields == 0
                         set(GameOverHd1, 'Visible', 'on');
                         set(PressKeyHd1, 'Visible', 'on');
-                        set(ScoreHd1, 'Visible', 'off');
+                        set(LifeCounterHd1, 'Visible', 'off');
                         dir = 0;
                         restar_game;
                         runLoop = false;
@@ -220,6 +229,15 @@ while runLoop
                     ShieldX = randi([0 GAME_RESOLUTION(1) - 100]);
                     ShieldY = -100;
                     set(EscudoCanvasHd1, 'XData', ShieldX, 'YData', ShieldY);
+                    %El jugador gana la partida si tiene 5 escudos
+                    if shields >= 4
+                        set(VictoryHd1, 'Visible', 'on');
+                        set(PressKeyHd1, 'Visible', 'on');
+                        set(LifeCounterHd1, 'Visible', 'on');
+                        dir = 0;
+                        restar_game;
+                        runLoop = false;
+                    end
                 end
 
             end
