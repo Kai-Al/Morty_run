@@ -1,5 +1,5 @@
 function restar_game % Funcion de inicializacion de variables
-    global AsteroideX AsteroideY ShieldX ShieldY PlayerInit AsteroideInit direction touch_bottom score new_star_game;
+    global AsteroideX AsteroideY ShieldX ShieldY PlayerInit AsteroideInit direction touch_bottom shields new_star_game;
     % Inicializacion de variables de juego
     PlayerInit = [300 432]; %Posición inical del jugador
     ShieldX = randperm(700, 1); %Posición inicial del escudo en el eje X
@@ -23,6 +23,7 @@ function restar_game % Funcion de inicializacion de variables
     score = 0; %Inicialización de la variable de puntuación
     new_star_game = 0; %Inicialización de la variable de reinicio de juego
     runLoop = false;
+    shields = 2; %Inicialización de la variable de escudos
     disp("Entró a restart_game")
     drawnow;
 end

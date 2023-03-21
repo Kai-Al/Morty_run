@@ -12,7 +12,8 @@ MainFigureInitPos = [500 100]; % Posicion inicial de la ventana
 MainFigureSize = [800 600]; % Tamaño de la ventana
 MainAxesInitPos = [0 0]; % Posicion inicial de los ejes
 MainAxesSize = [800 600]; % Tamaño de los ejes
-HDLSize = [100 100]; % Tamaño de los objetos
+ObjectSize = [100 100]; % Tamaño de los objetos
+PlayerSize = [100 100]; % Tamaño del jugador
 
 MainFigureHd1 = figure('Name', 'Morty run', ... % Nombre de la ventana
     'NumberTitle', 'off', ... % Desactiva el numero de la ventana
@@ -86,12 +87,20 @@ ScoreHd1 = text (GAME_RESOLUTION(1) / 2, GAME_RESOLUTION(2) / 2, '0', ...
     'HorizontalAlignment', 'center', ...
     'VerticalAlignment', 'middle');
 
+LifeCounterHd1 = text (GAME_RESOLUTION(1) - 50, GAME_RESOLUTION(2) - 50, num2str(shields+1), ...
+    'Parent', MainAxesHd1, ...
+    'Visible', 'on', ...
+    'Color', [1 1 1], ...
+    'FontSize', 20, ...
+    'HorizontalAlignment', 'center', ...
+    'VerticalAlignment', 'middle');
+
 jugador = imread('Morty.png');
-jugador = imresize(jugador, HDLSize);
+jugador = imresize(jugador, PlayerSize);
 asteroide = imread('asteroide.png');
-asteroide = imresize(asteroide, HDLSize);
+asteroide = imresize(asteroide, ObjectSize);
 escudo = imread('escudo.png');
-escudo = imresize(escudo, HDLSize);
+escudo = imresize(escudo, ObjectSize);
 escudoLogo = imread('escudo.png');
 escudoLogo = imresize(escudoLogo, [30 30]);
 
@@ -106,7 +115,6 @@ global dir mdir bdir shields s_shield ShieldCanvasHd1
 dir = 0;
 mdir = ones(1, 3);
 bdir = 0;
-shields = 2;
 Speed_shield = 1;
 directionEscudo = 0;
 ShieldCanvasHd1 = ones(1, shields + 1);
@@ -120,6 +128,7 @@ while runLoop
         set(GameOverHd1, 'Visible', 'off');
         set(PressKeyHd1, 'Visible', 'off');
         set(ScoreHd1, 'Visible', 'off');
+        set(LifeCounterHd1, 'Visible', 'on');
 
         while runLoop
             drawnow;
@@ -155,13 +164,14 @@ while runLoop
                         runLoop = false;
                     else
                         shields = shields - 1;
+                        %Se cambia el texto del contador de vidas
+                        set(LifeCounterHd1, 'String', num2str(shields+1));
                         %Se mueve el asteroide a una posición aleatoria arriba de la pantalla
                         AsteroideX(i) = randi([0 GAME_RESOLUTION(1) - 100]);
                         AsteroideY(i) = GAME_RESOLUTION(2) + 100;
                         mdir(i) = 1;
                         set(Asteroide1CanvasHd1, 'XData', AsteroideX(i), 'YData', AsteroideY(i));
                         %Mostrar las vidas restantes
-                        disp(shields)
                     end
 
                     %Si el jugador no choca con el asteroide, se revisa si el jugador chocó con un escudo.
@@ -206,7 +216,8 @@ while runLoop
 
                 if ((PlayerInit(1) >= ShieldX && PlayerInit(1) <= ShieldX + 100) || (PlayerInit(1) + 100 >= ShieldX && PlayerInit(1) + 100 <= ShieldX + 100)) && ((PlayerInit(2) >= ShieldY && PlayerInit(2) <= ShieldY + 100) || (PlayerInit(2) + 100 >= ShieldY && PlayerInit(2) + 100 <= ShieldY + 100))
                     shields = shields + 1;
-                    disp(shields)
+                    %Se cambia el texto del contador de vidas
+                    set(LifeCounterHd1, 'String', num2str(shields+1));
                     ShieldX = randi([0 GAME_RESOLUTION(1) - 100]);
                     ShieldY = -100;
                     set(EscudoCanvasHd1, 'XData', ShieldX, 'YData', ShieldY);
