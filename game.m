@@ -1,4 +1,5 @@
-% Morty run
+clear all, close all, clc
+% Morty run 
 % Juego en el jugador debe evitar los asteroides y recoger los escudos
 global PlayerInit AsteroideInit new_star_game direction score runLoop ShieldX ShieldY;
 
@@ -6,12 +7,12 @@ restar_game; % Función de inicializacion de variables
 
 % Inicializacion de variables de juego
 
-GAME_RESOLUTION = [800 600]; % Resolucion del juego
+GAME_RESOLUTION = [640 580]; % Resolucion del juego
 GAME.WINDOW_RES = GAME_RESOLUTION; % Resolucion de la ventana
 MainFigureInitPos = [500 100]; % Posicion inicial de la ventana
-MainFigureSize = [800 600]; % Tamaño de la ventana
+MainFigureSize = [640 580]; % Tamaño de la ventana
 MainAxesInitPos = [0 0]; % Posicion inicial de los ejes
-MainAxesSize = [800 600]; % Tamaño de los ejes
+MainAxesSize = [640 580]; % Tamano de los ejes
 ObjectSize = [50 50]; % Tamaño de los objetos
 PlayerSize = [100 100]; % Tamaño del jugador
 
@@ -121,13 +122,18 @@ set (EscudoCanvasHd1, 'CData', escudo);
 global dir mdir bdir shields s_shield ShieldCanvasHd1
 
 dir = 0;
-mdir = ones(1, 3);
+mdir = ones(1, 3)*5; % Controla la velocidad de los meteoritos
 bdir = 0;
 Speed_shield = 1;
 directionEscudo = 0;
 ShieldCanvasHd1 = ones(1, shields + 1);
 runLoop = true;
 
+% 640x480
+camara = webcam();
+%preview(camara); % Muestra la camara
+figure(3);
+hImg = imshow(zeros(480, 640, 3, 'uint8'));
 while runLoop
 
     if new_star_game == 1
@@ -141,17 +147,58 @@ while runLoop
         while runLoop
             drawnow;
 
-            if (direction == 1)
-                dir = 1; %Movimiento hacia la derecha
+        captura = snapshot(camara); % Toma una captura de camara
+       
+        % imagenFinal contendra una imagen en donde el objeto verde está en
+        % blanco y el resto en negro
+        imagen_final = BinarizarImg(captura);
+    
+        % Halla las coordenadas en columnas y los guarda
+        % en yPromedio y xPromedio
+    
+        % Encuentra las filas y columnas del objeto verde
+        [fila, columna] = find(imagen_final > 0);
+        filaMin = min(fila); % Encuentra la fila minima donde aparece el objeto verde
+        filaMax = max(fila); % Encuentra la columna minima donde aparece el objeto verde
+        colMin = min(columna); % Encuentra la fila maxima donde aparece el objeto verde
+        colMax = max(columna); % Encuentra la columna maxima donde aparece el objeto verde
+        
+        % Se halla el punto medio entre la primera y la ultima fila entre
+        % las que esta el objeto verde
+        yPromedio = fix((filaMin + filaMax)/2);
+       
+        % Se halla el punto medio entre la primera y la ultima columna entre
+        % las que esta el objeto verde
+        xPromedio = fix((colMin + colMax)/2);
+    
+        % Imprime las coordenadas Y y X
+        disp("Y:" + yPromedio);
+        disp("X:" + xPromedio);
+    
+        % Contendrá una imagen en negro y un punto blanco
+        % el punto blanco será la posicion en donde está el objeto verde
+        copiaImagen = imagen_final*0;
+    
+            % Muestra la captura original
+            figure(3);subplot(2,1,1);
+            imshow(flip(captura, 2));
+            title('Imagen original');
+            
+            % Muestra la captura final con los objetos verdes detectados
+            figure(3);subplot(2,1,2);
+            imshow(flip(imagen_final, 2));
+            title('Objetos verdes');
+   
+        %figure(2), imshow(copiaImagen); % MUESTRA LA POSICION DEL OBJETO VERDE
+        %figure(2), imshow(imagenFinal); % MUESTRA EL OBJETO VERDE CAPTURADO
+
+
+            
+            if (PlayerInit(1) < xPromedio)
+                dir = 5; %Movimiento hacia la derecha
                 direction = 0;
-            elseif (direction == 2)
-                dir = -1; %Movimiento hacia la izquierda
-                direction = 0;
-            elseif (direction == 3)
-                dir = 0;
-                direction = 0;
-            elseif (direction == 4)
-                dir = 0;
+            elseif (PlayerInit(1) > xPromedio)
+                dir = -5; %Movimiento hacia la izquierda
                 direction = 0;
             end
 
