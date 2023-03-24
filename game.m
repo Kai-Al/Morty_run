@@ -1,7 +1,7 @@
 clear all, close all, clc
-% Morty run 
+% Morty run
 % Juego en el jugador debe evitar los asteroides y recoger los escudos
-global PlayerInit AsteroideInit new_star_game direction score runLoop ShieldX ShieldY;
+global PlayerInit AsteroideInit new_star_game direction score runLoop ShieldX ShieldY AsteroideX AsteroideY;
 
 restar_game; % Función de inicializacion de variables
 
@@ -122,7 +122,7 @@ set (EscudoCanvasHd1, 'CData', escudo);
 global dir mdir bdir shields s_shield ShieldCanvasHd1
 
 dir = 0;
-mdir = ones(1, 3)*5; % Controla la velocidad de los meteoritos
+mdir = ones(1, 3) * 5; % Controla la velocidad de los meteoritos
 bdir = 0;
 Speed_shield = 1;
 directionEscudo = 0;
@@ -134,6 +134,7 @@ camara = webcam();
 %preview(camara); % Muestra la camara
 figure(3);
 hImg = imshow(zeros(480, 640, 3, 'uint8'));
+
 while runLoop
 
     if new_star_game == 1
@@ -144,56 +145,55 @@ while runLoop
         set(PressKeyHd1, 'Visible', 'off');
         set(ScoreHd1, 'Visible', 'off');
         set(LifeCounterHd1, 'Visible', 'on');
+
         while runLoop
             drawnow;
 
-        captura = snapshot(camara); % Toma una captura de camara
-       
-        % imagenFinal contendra una imagen en donde el objeto verde está en
-        % blanco y el resto en negro
-        imagen_final = BinarizarImg(captura);
-    
-        % Halla las coordenadas en columnas y los guarda
-        % en yPromedio y xPromedio
-    
-        % Encuentra las filas y columnas del objeto verde
-        [fila, columna] = find(imagen_final > 0);
-        filaMin = min(fila); % Encuentra la fila minima donde aparece el objeto verde
-        filaMax = max(fila); % Encuentra la columna minima donde aparece el objeto verde
-        colMin = min(columna); % Encuentra la fila maxima donde aparece el objeto verde
-        colMax = max(columna); % Encuentra la columna maxima donde aparece el objeto verde
-        
-        % Se halla el punto medio entre la primera y la ultima fila entre
-        % las que esta el objeto verde
-        yPromedio = fix((filaMin + filaMax)/2);
-       
-        % Se halla el punto medio entre la primera y la ultima columna entre
-        % las que esta el objeto verde
-        xPromedio = fix((colMin + colMax)/2);
-    
-        % Imprime las coordenadas Y y X
-        disp("Y:" + yPromedio);
-        disp("X:" + xPromedio);
-    
-        % Contendrá una imagen en negro y un punto blanco
-        % el punto blanco será la posicion en donde está el objeto verde
-        copiaImagen = imagen_final*0;
-    
+            captura = snapshot(camara); % Toma una captura de camara
+
+            % imagenFinal contendra una imagen en donde el objeto verde está en
+            % blanco y el resto en negro
+            imagen_final = BinarizarImg(captura);
+
+            % Halla las coordenadas en columnas y los guarda
+            % en yPromedio y xPromedio
+
+            % Encuentra las filas y columnas del objeto verde
+            [fila, columna] = find(imagen_final > 0);
+            filaMin = min(fila); % Encuentra la fila minima donde aparece el objeto verde
+            filaMax = max(fila); % Encuentra la columna minima donde aparece el objeto verde
+            colMin = min(columna); % Encuentra la fila maxima donde aparece el objeto verde
+            colMax = max(columna); % Encuentra la columna maxima donde aparece el objeto verde
+
+            % Se halla el punto medio entre la primera y la ultima fila entre
+            % las que esta el objeto verde
+            yPromedio = fix((filaMin + filaMax) / 2);
+
+            % Se halla el punto medio entre la primera y la ultima columna entre
+            % las que esta el objeto verde
+            xPromedio = fix((colMin + colMax) / 2);
+
+            % Imprime las coordenadas Y y X
+            disp("Y:" + yPromedio);
+            disp("X:" + xPromedio);
+
+            % Contendrá una imagen en negro y un punto blanco
+            % el punto blanco será la posicion en donde está el objeto verde
+            copiaImagen = imagen_final * 0;
+
             % Muestra la captura original
-            figure(3);subplot(2,1,1);
+            figure(3); subplot(2, 1, 1);
             imshow(flip(captura, 2));
             title('Imagen original');
-            
+
             % Muestra la captura final con los objetos verdes detectados
-            figure(3);subplot(2,1,2);
+            figure(3); subplot(2, 1, 2);
             imshow(flip(imagen_final, 2));
             title('Objetos verdes');
-   
-        %figure(2), imshow(copiaImagen); % MUESTRA LA POSICION DEL OBJETO VERDE
-        %figure(2), imshow(imagenFinal); % MUESTRA EL OBJETO VERDE CAPTURADO
 
+            %figure(2), imshow(copiaImagen); % MUESTRA LA POSICION DEL OBJETO VERDE
+            %figure(2), imshow(imagenFinal); % MUESTRA EL OBJETO VERDE CAPTURADO
 
-            
             if (PlayerInit(1) < xPromedio)
                 dir = 5; %Movimiento hacia la derecha
                 direction = 0;
@@ -220,7 +220,7 @@ while runLoop
                     else
                         shields = shields - 1;
                         %Se cambia el texto del contador de vidas
-                        set(LifeCounterHd1, 'String', num2str(shields+1));
+                        set(LifeCounterHd1, 'String', num2str(shields + 1));
                         %Se mueve el asteroide a una posición aleatoria arriba de la pantalla
                         AsteroideX(i) = randi([0 GAME_RESOLUTION(1) - 100]);
                         AsteroideY(i) = GAME_RESOLUTION(2) + 100;
@@ -258,7 +258,7 @@ while runLoop
                     set(Asteroide3CanvasHd1, 'XData', AsteroideX(3), 'YData', AsteroideY(3));
 
                     %Se mueve el escudo
-                    ShieldY = ShieldY + s_shield;
+                    ShieldY = ShieldY + Speed_shield;
 
                     if ShieldY > GAME_RESOLUTION(2)
                         ShieldY = -100;
@@ -269,10 +269,10 @@ while runLoop
 
                 end
 
-                if ((PlayerInit(1) >= ShieldX && PlayerInit(1) <= ShieldX + 50) || (PlayerInit(1) + 100 >= ShieldX && PlayerInit(1) + 100 <= ShieldX + 50)) && ((PlayerInit(2) >= ShieldY && PlayerInit(2) <= ShieldY + 50) || (PlayerInit(2) + 100 >= ShieldY && PlayerInit(2) + 100 <= ShieldY + 50))
+                if any((PlayerInit(1) >= ShieldX & PlayerInit(1) <= ShieldX + 50) | (PlayerInit(1) + 100 >= ShieldX & PlayerInit(1) + 100 <= ShieldX + 50) & (PlayerInit(2) >= ShieldY & PlayerInit(2) <= ShieldY + 50) | (PlayerInit(2) + 100 >= ShieldY & PlayerInit(2) + 100 <= ShieldY + 50))
                     shields = shields + 1;
                     %Se cambia el texto del contador de vidas
-                    set(LifeCounterHd1, 'String', num2str(shields+1));
+                    set(LifeCounterHd1, 'String', num2str(shields + 1));
                     ShieldX = randi([0 GAME_RESOLUTION(1) - 100]);
                     ShieldY = -100;
                     set(EscudoCanvasHd1, 'XData', ShieldX, 'YData', ShieldY);
@@ -285,6 +285,7 @@ while runLoop
                         restar_game;
                         runLoop = false;
                     end
+
                 end
 
             end
